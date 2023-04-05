@@ -2,13 +2,6 @@
 
 const { User, Thought } = require('../models');
 
-// add PUT to update a thought by its _id
-
-
-// /api/thoughts/:thoughtId/reactions
-// POST to create a reaction stored in a single thought's reactions array field
-// DELETE to pull and remove a reaction by the reaction's reactionId value
-
 module.exports = {
     // GET to get all thoughts
     getThoughts(req, res) {
@@ -47,6 +40,44 @@ module.exports = {
             }
             )
             .then(() => res.json({ message: 'Thought deleted!'}))
+            .catch((err) => res.status(500).json(err));
+    },
+
+    // PUT to update a thought by its _id
+    updateThought(req, res) {
+        Thought.findByIdAndUpdate(
+            { _id: req.params.thoughtId },
+            { $set: req.body },
+            { runValidators: true, new: true } //not sure what this line does
+        )
+        .then((thought) =>
+        !thought
+            ? res.status(404).json({ message: 'No thought with this id!' })
+            : res.json(thought)
+        )
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+    },
+
+    // POST to create a reaction stored in a single thought's reactions array field
+    createReaction(req, res) {
+        Thought.create(req.body)
+            .then((reaction) => res.json(reaction))
+            .catch((err) => res.status(500).json(err));
+    },
+
+    // DELETE to pull and remove a reaction by the reaction's reactionId value
+    deleteReaction(req, res) {
+        Thought.findOneAndDelete({ _id: req.params.reactionId })
+            .then((reaction) => {
+                if(!reaction){
+                    res.status(404).json({ message: 'No reaction with that ID' })
+                }
+            }
+            )
+            .then(() => res.json({ message: 'Reaction deleted!'}))
             .catch((err) => res.status(500).json(err));
     }
 }
