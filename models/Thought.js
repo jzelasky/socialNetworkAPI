@@ -10,18 +10,28 @@ const reactionSchema = new mongoose.Schema({
   createdAt: { type: Date }, //set default value to the current timestamp, use a getter emthod to format the timestamp on query
 })
 
-const thoughtSchema = new mongoose.Schema({
-
+const thoughtSchema = new mongoose.Schema(
+  {
   thoughtText: { type: String, required: true }, //add 280 character max
   createdAt: { type: Date }, //set default value to the current timestamp, use a getter emthod to format the timestamp on query
   username: { type: String, required: true}, // the user that created the thought, what needs to be referenced where?
   reactions: [reactionSchema]
-  
-});
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false, //not sure what this line means
+  }
+);
+
+thoughtSchema.virtual('reactionCount').get(function () {
+  return this.reactions.length;
+})
 
 
 const Thought = mongoose.model('Thought', thoughtSchema);
 
-const handleError = (err) => console.error(err);
+//const handleError = (err) => console.error(err);
 
 module.exports = Thought;
