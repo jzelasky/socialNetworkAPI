@@ -3,11 +3,9 @@ const mongoose = require('mongoose');
 //Create a virtual called reactionCount that retrieves the length of the thought's reactions array fireld on query
 
 const reactionSchema = new mongoose.Schema({
-
-  reactionId: { }, //use mongoose's ObjectId data type, default value is set to a new ObejctId
   reactionBody: { type: String, required: true }, //add 280 character max
-  username: { type: String, required: true}, //user that created the reaction, what needs to be referenced where?
-  createdAt: { type: Date }, //set default value to the current timestamp, use a getter emthod to format the timestamp on query
+  username: { type: String, required: true }, //user that created the reaction, what needs to be referenced where?
+  createdAt: { type: Date, default: Date.now }, //use a getter method to format the timestamp on query
 })
 
 const thoughtSchema = new mongoose.Schema(

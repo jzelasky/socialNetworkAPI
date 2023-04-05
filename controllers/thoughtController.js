@@ -65,21 +65,35 @@ module.exports = {
     // POST to create a reaction stored in a single thought's reactions array field
     //this is trying to create a new thought instead of a reaction
     createReaction(req, res) {
-        Thought.create(req.body)
-            .then((reaction) => res.json(reaction))
+        console.log(req.params)
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body } },
+            { runValidators: true, new: true } //not sure what this line does
+        )
+            .then((reaction) => {
+                console.log(reaction);
+                !reaction
+                    ? res.status(404).json({ message: 'No thought with that ID'})
+                    : res.json(reaction)
+            }
+            )
             .catch((err) => res.status(500).json(err));
     },
 
     // DELETE to pull and remove a reaction by the reaction's reactionId value
     deleteReaction(req, res) {
-        Thought.findOneAndDelete({ _id: req.params.reactionId })
-            .then((reaction) => {
-                if(!reaction){
-                    res.status(404).json({ message: 'No reaction with that ID' })
-                }
-            }
+        console.log(req.params)
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
+            { runValidators: true, new: true } //not sure what this line does
             )
-            .then(() => res.json({ message: 'Reaction deleted!'}))
+            .then((reaction) => 
+                !reaction
+                    ? res.status(404).json({ message: 'No thought with that ID'})
+                    : res.json(reaction)
+            )
             .catch((err) => res.status(500).json(err));
     }
 }
