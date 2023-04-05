@@ -6,6 +6,7 @@ module.exports = {
     // GET to get all thoughts
     getThoughts(req, res) {
         Thought.find()
+            .populate('reaction') //not sure about this line
             .then((thoughts) => res.json(thoughts))
             .catch((err) => res.status(500).json(err));
     },
@@ -62,6 +63,7 @@ module.exports = {
     },
 
     // POST to create a reaction stored in a single thought's reactions array field
+    //this is trying to create a new thought instead of a reaction
     createReaction(req, res) {
         Thought.create(req.body)
             .then((reaction) => res.json(reaction))
