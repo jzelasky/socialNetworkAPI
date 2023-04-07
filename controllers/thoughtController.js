@@ -63,9 +63,7 @@ module.exports = {
     },
 
     // POST to create a reaction stored in a single thought's reactions array field
-    //this is trying to create a new thought instead of a reaction
     createReaction(req, res) {
-        console.log(req.params)
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $addToSet: { reactions: req.body } },
@@ -83,11 +81,10 @@ module.exports = {
 
     // DELETE to pull and remove a reaction by the reaction's reactionId value
     deleteReaction(req, res) {
-        console.log(req.params)
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $pull: { reactions: { reactionId: req.params.reactionId } } },
-            { runValidators: true, new: true } //not sure what this line does
+            { runValidators: true, new: true }
             )
             .then((reaction) => 
                 !reaction
