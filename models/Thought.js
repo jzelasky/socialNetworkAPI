@@ -9,7 +9,7 @@ const reactionSchema = new mongoose.Schema({
 const thoughtSchema = new mongoose.Schema(
   {
   thoughtText: { type: String, required: true, maxLength: 280 },
-  createdAt: { type: Date }, //set default value to the current timestamp, use a getter emthod to format the timestamp on query
+  createdAt: { type: Date, default: Date.now }, //set default value to the current timestamp, use a getter emthod to format the timestamp on query
   username: { type: String, required: true},
   reactions: [reactionSchema]
   },
