@@ -6,7 +6,7 @@ module.exports = {
     // GET to get all thoughts
     getThoughts(req, res) {
         Thought.find()
-            //.populate('reaction') //not sure about this line
+            //.populate('reaction')
             .then((thoughts) => res.json(thoughts))
             .catch((err) => res.status(500).json(err));
     },
@@ -14,7 +14,7 @@ module.exports = {
     // GET to get a single thought by its _id
     getSingleThought(req, res) {
         Thought.findOne({ _id: req.params.thoughtId })
-            .select('-__v') //not sure what this does
+            .select('-__v')
             .then((thought) =>
                 !thought
                     ? res.status(404).json({ message: 'No thought with that ID'})
