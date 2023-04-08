@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     unique: true,
     match: /.+\@.+\..+/, //email validation
   },
-  //thoughts: {type: ObjectId, ref: 'Thought'}, // not working
+  thoughts: Array,
   friends: [this],
   },
   {

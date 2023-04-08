@@ -29,6 +29,11 @@ module.exports = {
         Thought.create(req.body)
             .then((thought) => res.json(thought))
             .catch((err) => res.status(500).json(err));
+        User.findByIdAndUpdate(
+            { _id: req.body.username },
+            { $addToSet: { thoughts: req.params.thoughtId } },
+            { runValidators: true, new: true }
+        )
     },
 
     // DELETE to remove a thought by its _id
