@@ -1,18 +1,27 @@
 const mongoose = require('mongoose');
-const Thought = require('./Thought');
 
 const userSchema = new mongoose.Schema(
   {
-  username: { type: String, required: true }, //add unique and trimmed
-  email: { type: String, required: true }, //add unique and email validation
-  thoughts: [], // add referenece to Thought model
-  friends: [this], // add self reference to User model
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    trim: true 
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    match: /.+\@.+\..+/, //email validation
+  },
+  //thoughts: {type: ObjectId, ref: 'Thought'}, // not working
+  friends: [this],
   },
   {
     toJSON: {
-      virtuals: true,
+      virtuals: true
     },
-    id: false, //not sure what this line means
+    id: false,
   }
 );
 
@@ -20,9 +29,6 @@ userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 })
 
-
 const User = mongoose.model('User', userSchema);
-
-//const handleError = (err) => console.error(err);
 
 module.exports = User;
