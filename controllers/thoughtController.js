@@ -23,17 +23,21 @@ module.exports = {
             .catch((err) => res.status(500).json(err));
     },
 
-    // POST to create a new thought 
-    //add: (don't forget to push the created thought's _id to the associated user's thought array field)
+    // POST to create a new thought
     createThought(req, res) {
         Thought.create(req.body)
-            .then((thought) => res.json(thought))
-            .catch((err) => res.status(500).json(err));
-        User.findByIdAndUpdate(
-            { _id: req.body.username },
-            { $addToSet: { thoughts: req.params.thoughtId } },
-            { runValidators: true, new: true }
-        )
+        .then((thought) => {
+            console.log(thought._id)
+            return User.findOneAndUpdate(          //lines 31-35 on their own don't work but don't error
+                { username: req.body.username }, //adding lines 36-37 makes the server error and crash
+                { $push: { thoughts: thought._id } },
+                { runValidators: true, new: true }
+            )
+            .then((user) => res.json(user))
+            // .catch((err) => res.status(500).json(err))
+            // res.json(thought)
+        })
+        .catch((err) => res.status(500).json(err));
     },
 
     // DELETE to remove a thought by its _id
@@ -43,8 +47,7 @@ module.exports = {
                 if(!thought){
                     res.status(404).json({ message: 'No thought with that ID' })
                 }
-            }
-            )
+            })
             .then(() => res.json({ message: 'Thought deleted!'}))
             .catch((err) => res.status(500).json(err));
     },
@@ -54,7 +57,7 @@ module.exports = {
         Thought.findByIdAndUpdate(
             { _id: req.params.thoughtId },
             { $set: req.body },
-            { runValidators: true, new: true } //not sure what this line does
+            { runValidators: true, new: true } 
         )
         .then((thought) =>
         !thought
@@ -72,7 +75,7 @@ module.exports = {
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $addToSet: { reactions: req.body } },
-            { runValidators: true, new: true } //not sure what this line does
+            { runValidators: true, new: true } 
         )
             .then((reaction) => {
                 console.log(reaction);

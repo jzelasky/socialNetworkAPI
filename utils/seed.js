@@ -15,29 +15,25 @@ connection.once('open', async () => {
     for (let i=0; i < 20; i++){
         const username = getRandomUsername();
         const email = username + '@email.com';
+        const thought = getRandomText();
         
         users.push({
             username,
-            email
+            email,
+            thought
         })
-    }
-
-    for (let i=0; i < 35; i++){
-        const thought = getRandomText();
-        const user = getRandomArrItem(users);
-        const username = user.username;
 
         thoughts.push({
-            thought,
-            username
+            username,
+            thought
         })
     }
+
 
     await User.collection.insertMany(users);
     await Thought.collection.insertMany(thoughts);
 
     console.table(users);
-    console.table(thoughts)
     console.info('Seeding complete! 🌱');
     process.exit(0);
 });
